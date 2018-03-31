@@ -1,12 +1,12 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "ecom"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  title: "ecomma"
+  description: A simple API for simple e-commerce stuff.
   license:
-    name: MIT
-    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
-host: polls.apiblueprint.org
+    name: GPL3
+    url: https://github.com/carlvelde/ecomma/blob/master/LICENSE
+host: ecomma.apiblueprint.org
 basePath: /
 schemes:
 - http
@@ -15,106 +15,61 @@ consumes:
 produces:
 - application/json
 paths:
-  /questions:
-    x-summary: Questions Collection
+  /stock/find:
+    x-summary: Stock levels
     get:
-      summary: List All Questions
+      summary: Get stock levels for a variant
+      produces:
+      - "application/json"
+      parameters:
+      - name: "warehouseId"
+        in: "query"
+        description: "Warehouse id to filter out stock for a specific warehouse"
+        required: false
+        type: "string"
+      - name: "variantId"
+        in: "query"
+        description: "One or more Variant ids to get by"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
       responses:
         200:
           description: Successful Response
           schema:
             type: array
             items:
-              $ref: '#/definitions/Question'
-          examples:
-            application/json:
-              - question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 2048
-                  - choice: Python
-                    votes: 1024
-                  - choice: Objective-C
-                    votes: 512
-                  - choice: Ruby
-                    votes: 256
-    post:
-      description: >-
-        You may create your own question using this action. It takes a JSON
-        object containing a question and a collection of answers in the
-        form of choices.
-      summary: Create a New Question
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/QuestionRequest'
-      responses:
-        201:
-          description: ''
-          schema:
-            $ref: '#/definitions/Question'
-          examples:
-            application/json:
-                question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 0
-                  - choice: Python
-                    votes: 0
-                  - choice: Objective-C
-                    votes: 0
-                  - choice: Ruby
-                    votes: 0
+              $ref: '#/definitions/StockStatus'
+          
 definitions:
-  Question:
-    title: Question
+  StockStatus:
+    title: StockStaus
     type: object
     properties:
-      question:
+      variant_id:
         type: string
-      published_at:
+      warehouse_code:
         type: string
-      choices:
-        type: array
-        items:
-          $ref: '#/definitions/Choice'
-    required:
-      - question
-      - published_at
-      - choices
-  Choice:
-    title: Choice
-    type: object
-    properties:
-      votes:
+      updated:
+        type: string
+        format: date-time
+      stock_level:
         type: integer
-        format: int32
-      choice:
-        type: string
     required:
-      - votes
-      - choice
-  QuestionRequest:
-    title: Question Request
+      - variant_id
+      - warehouse_code
+      - updated
+      - stock_level
+  StockStatusRequest:
+    title: StockStatusRequest
     type: object
     properties:
-      question:
+      variant_id:
         type: string
-      choices:
-        type: array
-        items:
-          type: string
+      warehouse_code:
+        type: string
     required:
-      - question
-      - choices
-    example:
-      question: Favourite programming language?
-      choices:
-        - Swift
-        - Python
-        - Objective-C
-        - Ruby
+      - variant_id
+      - warehouse_code
