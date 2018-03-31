@@ -15,10 +15,10 @@ consumes:
 produces:
 - application/json
 paths:
-  /stock/find:
+  /stock/findByVariant:
     x-summary: Stock levels
     get:
-      summary: Get stock levels for a variant
+      summary: Get stock levels for one or more variants. Optional to filter by warehouse.
       produces:
       - "application/json"
       parameters:
@@ -41,10 +41,10 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/StockStatus'
+              $ref: '#/definitions/VariantStockLevel'
           
 definitions:
-  StockStatus:
+  VariantStockLevel:
     title: StockStaus
     type: object
     properties:
@@ -62,14 +62,3 @@ definitions:
       - warehouse_code
       - updated
       - stock_level
-  StockStatusRequest:
-    title: StockStatusRequest
-    type: object
-    properties:
-      variant_id:
-        type: string
-      warehouse_code:
-        type: string
-    required:
-      - variant_id
-      - warehouse_code
